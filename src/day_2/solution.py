@@ -46,7 +46,7 @@ num_old_rule_valid_passwords = sum(
     in old_rule_and_passwords
 )
 
-pp(f"Puzze 1: {num_old_rule_valid_passwords}")
+pp(f"Puzzle 1: {num_old_rule_valid_passwords}")
 
 
 def get_new_rule(line):
@@ -79,4 +79,4 @@ num_new_rule_valid_passwords = sum(
     in new_rule_and_passwords
 )
 
-pp(f"Puzze 2: {num_new_rule_valid_passwords}")
+pp(f"Puzzle 2: {num_new_rule_valid_passwords}")
