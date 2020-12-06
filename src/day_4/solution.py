@@ -8,8 +8,8 @@ file_handler = open(current_dir/"input.txt", 'r')
 
 
 def is_valid_height(value_str):
-    amount = value_str[:4]
-    unit = value_str[4:]
+    amount = value_str[:-2]
+    unit = value_str[-2:]
 
     is_valid_metric = (
         unit == 'cm' and int(amount) in range(150, 193 + 1)
@@ -32,7 +32,7 @@ FIELDS = [
     },
     {
         'name': 'eyr',
-        'is_valid': lambda value: int(value) in range(2020, 2002 + 1)
+        'is_valid': lambda value: int(value) in range(2020, 2030 + 1)
     },
     {
         'name': 'hgt',
@@ -84,7 +84,6 @@ def has_required_fields(document):
 
 
 def has_valid_field_values(document):
-  pp(document.items())
   return all(
       next(
           field['is_valid']
@@ -92,6 +91,7 @@ def has_valid_field_values(document):
           if field_name == field['name']
       )(value)
       for field_name, value in document.items()
+      if field_name != 'cid'
   )
 
 file_lines = [
