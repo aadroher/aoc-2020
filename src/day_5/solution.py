@@ -6,9 +6,9 @@ current_dir = Path(__file__).parent
 file_handler = open(current_dir/"input.txt", 'r')
 
 
-def get_binary_parser(unit_symbol):
+def get_binary_parser(one_symbol):
     return lambda row_spec_string: sum(
-        2**i if char == unit_symbol else 0
+        2**i if char == one_symbol else 0
         for i, char
         in enumerate(
             reversed(row_spec_string)
@@ -17,8 +17,8 @@ def get_binary_parser(unit_symbol):
 
 
 def get_location_data(location_spec_str):
-    parse_row = get_binary_parser('B')
-    parse_column = get_binary_parser('R')
+    parse_row = get_binary_parser(one_symbol='B')
+    parse_column = get_binary_parser(one_symbol='R')
     row = parse_row(location_spec_str[:7])
     column = parse_column(location_spec_str[7:])
     seat_id = row * 8 + column
@@ -37,17 +37,17 @@ def get_empty_seat_id(seat_ids):
     )
 
 
-location_spec_strs = [
+location_spec_strs = (
     location_spec_str.strip()
     for location_spec_str
     in file_handler.readlines()
-]
+)
 
-locations = [
+locations = (
     get_location_data(location_spec_str)
     for location_spec_str
     in location_spec_strs
-]
+)
 
 seat_ids = [
     location['seat_id'] for location in locations
