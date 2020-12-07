@@ -7,26 +7,34 @@ file_handler = open(current_dir/"input.txt", 'r')
 
 
 def get_binary_parser(unit_symbol):
-  return lambda row_spec_string: sum(
-      2**i if char == unit_symbol else 0
-      for i, char
-      in enumerate(
-          reversed(row_spec_string)
-      )
-  )
+    return lambda row_spec_string: sum(
+        2**i if char == unit_symbol else 0
+        for i, char
+        in enumerate(
+            reversed(row_spec_string)
+        )
+    )
 
 
 def get_location_data(location_spec_str):
-  parse_row = get_binary_parser('B')
-  parse_column = get_binary_parser('R')
-  row = parse_row(location_spec_str[:7])
-  column = parse_column(location_spec_str[7:])
-  seat_id = row * 8 + column
-  return {
-      'row': row,
-      'column': column,
-      'seat_id': seat_id
-  }
+    parse_row = get_binary_parser('B')
+    parse_column = get_binary_parser('R')
+    row = parse_row(location_spec_str[:7])
+    column = parse_column(location_spec_str[7:])
+    seat_id = row * 8 + column
+    return {
+        'row': row,
+        'column': column,
+        'seat_id': seat_id
+    }
+
+
+def get_empty_seat_id(seat_ids):
+    sorted_seats = list(sorted(seat_ids))
+    return next(
+        seat_id + 1 for i, seat_id in enumerate(sorted_seats)
+        if sorted_seats[i+1] != seat_id + 1
+    )
 
 
 location_spec_strs = [
@@ -41,8 +49,12 @@ locations = [
     in location_spec_strs
 ]
 
-max_seat_id = max(
+seat_ids = [
     location['seat_id'] for location in locations
-)
+]
+
+max_seat_id = max(seat_ids)
+empty_seat_id = get_empty_seat_id(seat_ids)
 
 pp(f"Puzzle 1: {max_seat_id}")
+pp(f"Puzzle 2: {empty_seat_id}")
