@@ -29,12 +29,27 @@ group_answer_unions = [
     in groups_answer_sets
 ]
 
-counts_sum = sum(
+union_sizes_sum = sum(
     len(group_answer_union)
     for group_answer_union
     in group_answer_unions
 )
 
-pp(counts_sum)
+pp(f"Puzzle 1: {union_sizes_sum}")
 
-pp(f"Puzzle 1: {counts_sum}")
+group_answer_intersections = [
+    reduce(
+        lambda group_answer_intersection, group_answer_set: group_answer_intersection & group_answer_set,
+        group_answer_sets
+    )
+    for group_answer_sets
+    in groups_answer_sets
+]
+
+intersection_sizes_sum = sum(
+    len(group_answer_intersection)
+    for group_answer_intersection
+    in group_answer_intersections
+)
+
+pp(f"Puzzle 1: {intersection_sizes_sum}")
