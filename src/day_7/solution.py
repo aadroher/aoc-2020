@@ -70,15 +70,15 @@ def get_parent_colours(child_colour, child_to_parent_colours):
     if child_colour in child_to_parent_colours:
         parent_colours = list(child_to_parent_colours[child_colour])
         return reduce(
-            lambda result, parent_colour: [
-                *result,
-                *get_parent_colours(parent_colour, child_to_parent_colours)
-            ],
+            lambda result, parent_colour: (
+                result +
+                get_parent_colours(parent_colour, child_to_parent_colours)
+            ),
             parent_colours,
-            parent_colours
+            0
         )
     else:
-        return ['END']
+        return 1
 
 
 rules = [
@@ -88,6 +88,8 @@ rules = [
 ]
 
 child_to_parent_colours = get_child_to_parent_colours(rules)
+
+pp(rules)
 
 
 pp(get_parent_colours(
