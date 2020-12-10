@@ -58,12 +58,27 @@ def add_rule(child_to_parent_colours, rule):
     )
 
 
-def get_parents_by_child(rules):
+def get_child_to_parent_colours(rules):
     return reduce(
         add_rule,
         rules,
         {}
     )
+
+
+def get_parent_colours(child_colour, child_to_parent_colours):
+    if child_colour in child_to_parent_colours:
+        parent_colours = list(child_to_parent_colours[child_colour])
+        return reduce(
+            lambda result, parent_colour: [
+                *result,
+                *get_parent_colours(parent_colour, child_to_parent_colours)
+            ],
+            parent_colours,
+            parent_colours
+        )
+    else:
+        return ['END']
 
 
 rules = [
@@ -72,7 +87,10 @@ rules = [
     in file_lines
 ]
 
-parents_by_child = get_parents_by_child(rules)
+child_to_parent_colours = get_child_to_parent_colours(rules)
 
 
-pp(parents_by_child)
+pp(get_parent_colours(
+    'shiny_gold',
+    child_to_parent_colours
+))
