@@ -19,41 +19,34 @@ with_execution_count = [
 
 
 def execute_next(
-    next_instruction_pointer=0,
+    instruction_pointer=0,
     accumulator=0,
     instructions_with_counter=with_execution_count
 ):
     instruction, execution_count = \
-        instructions_with_counter[next_instruction_pointer]
-
-    pp(
-        (
-            (next_instruction_pointer, accumulator),
-            (instruction, execution_count)
-        )
-    )
+        instructions_with_counter[instruction_pointer]
 
     if execution_count == 0:
-        instructions_with_counter[next_instruction_pointer] = (instruction, 1)
+        instructions_with_counter[instruction_pointer] = (instruction, 1)
 
         operation, argument = instruction.split(' ')
         if operation == 'acc':
             return execute_next(
-                next_instruction_pointer=next_instruction_pointer + 1,
+                instruction_pointer=instruction_pointer + 1,
                 accumulator=accumulator + int(argument),
                 instructions_with_counter=instructions_with_counter
             )
         elif operation == 'jmp':
             return execute_next(
-                next_instruction_pointer=(
-                    next_instruction_pointer + int(argument)
+                instruction_pointer=(
+                    instruction_pointer + int(argument)
                 ),
                 accumulator=accumulator,
                 instructions_with_counter=instructions_with_counter
             )
         elif operation == 'nop':
             return execute_next(
-                next_instruction_pointer=next_instruction_pointer + 1,
+                instruction_pointer=instruction_pointer + 1,
                 accumulator=accumulator,
                 instructions_with_counter=instructions_with_counter
             )
@@ -63,4 +56,4 @@ def execute_next(
 
 accumulator = execute_next()
 
-pp(accumulator)
+pp(f"Puzzle 1: {accumulator}")
