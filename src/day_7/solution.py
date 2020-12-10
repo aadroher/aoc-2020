@@ -37,50 +37,6 @@ def parse_rule(rule_str):
     }
 
 
-def update_parent_set(parent_colour, child_to_parent_colours, child_colour):
-    parent_colour_set = child_to_parent_colours.get(child_colour, set())
-    return {
-        **child_to_parent_colours,
-        child_colour: {*parent_colour_set, parent_colour}
-    }
-
-
-def add_rule(child_to_parent_colours, rule):
-    parent_colour = rule['colour']
-    return reduce(
-        lambda updated_child_to_parent_colours, child: update_parent_set(
-            parent_colour,
-            updated_child_to_parent_colours,
-            child['colour']
-        ),
-        rule['contents'],
-        child_to_parent_colours
-    )
-
-
-def get_child_to_parent_colours(rules):
-    return reduce(
-        add_rule,
-        rules,
-        {}
-    )
-
-
-def get_parent_colours(child_colour, child_to_parent_colours):
-    if child_colour in child_to_parent_colours:
-        parent_colours = list(child_to_parent_colours[child_colour])
-        return reduce(
-            lambda result, parent_colour: (
-                result +
-                get_parent_colours(parent_colour, child_to_parent_colours)
-            ),
-            parent_colours,
-            0
-        )
-    else:
-        return 1
-
-
 def get_membership_edges(rules):
     return reduce(
         lambda membership_set, rule:  {
