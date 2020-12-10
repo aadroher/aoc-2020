@@ -1,6 +1,7 @@
 from pathlib import Path
 from pprint import pprint as pp
 from functools import reduce
+from collections import namedtuple
 
 current_dir = Path(__file__).parent
 file_handler = open(current_dir/"input.txt", 'r')
@@ -14,7 +15,7 @@ file_lines = [
 def parse_content(contained_bag_str):
     number, *colour_tokens = contained_bag_str.strip().split(' ')[:3]
     return {
-        'number': number,
+        'number': int(number),
         'colour': "_".join(colour_tokens)
     }
 
@@ -30,7 +31,7 @@ def parse_rule(rule_str):
         parse_content(contained_bag_str)
         for contained_bag_str
         in content_statement.split(',')
-    ]
+    ] if "no other" not in content_statement else []
     return {
         'colour': container_colour,
         'contents': contents
@@ -73,14 +74,31 @@ def get_membership_paths(path_prefixes, edge_set):
         }
 
 
+def count_child_bags(colour, rules):
+    rule = next(
+        rule for rule in rules if rule['colour'] == colour
+    )
+    return sum(
+        content['number'] + (
+            content['number'] * count_child_bags(content['colour'], rules)
+        )
+        for content in rule['contents']
+    )
+
+
 rules = [
     parse_rule(rule_str.strip())
     for rule_str
     in file_lines
 ]
+
 membership_edges = get_membership_edges(rules)
 paths = get_membership_paths({('shiny_gold',)}, membership_edges)
 end_colours = {path[-1] for path in paths}
 num_end_colours = len(end_colours)
 
 pp(f"Puzzle 1: {num_end_colours}")
+
+child_bags = count_child_bags(colour='shiny_gold', rules=rules)
+
+pp(f"Puzzle 2: {child_bags}")
