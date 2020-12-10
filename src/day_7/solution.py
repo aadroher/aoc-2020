@@ -81,6 +81,40 @@ def get_parent_colours(child_colour, child_to_parent_colours):
         return 1
 
 
+def get_membership_edges(rules):
+    return reduce(
+        lambda membership_set, rule:  {
+            *membership_set,
+            *{
+                (content['colour'], rule['colour'])
+                for content
+                in rule['contents']
+            }
+        }, rules, set()
+    )
+
+
+def get_membership_paths(path_prefixes, edge_set):
+  result = {}
+  for path_prefix in path_prefixes:
+    next_step = {
+        (*path_prefix, parent)
+        for child, parent
+        in edge_set
+        if path_prefix[-1] == child
+    }
+    result = {
+        *result,
+        *next_step
+    }
+  if len(result) == 0:
+    return result
+  else:
+    return {
+        *result,
+        *get_membership_paths(result, edge_set)
+    }
+
 rules = [
     parse_rule(rule_str.strip())
     for rule_str
@@ -89,9 +123,14 @@ rules = [
 
 # child_to_parent_colours = get_child_to_parent_colours(rules)
 
-pp(rules)
+# pp(rules)
 
-
+membership_edges = get_membership_edges(rules)
+paths = get_membership_paths({('shiny_gold',)}, membership_edges)
+end_colours = {path[-1] for path in paths}
+pp(paths)
+pp(end_colours)
+pp(len(end_colours))
 # pp(get_parent_colours(
 #     'shiny_gold',
 #     child_to_parent_colours
