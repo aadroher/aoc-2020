@@ -87,12 +87,12 @@ rules = [
     in file_lines
 ]
 
-child_to_parent_colours = get_child_to_parent_colours(rules)
+# child_to_parent_colours = get_child_to_parent_colours(rules)
 
 pp(rules)
 
 
-pp(get_parent_colours(
-    'shiny_gold',
-    child_to_parent_colours
-))
+# pp(get_parent_colours(
+#     'shiny_gold',
+#     child_to_parent_colours
+# ))
