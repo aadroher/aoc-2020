@@ -26,6 +26,10 @@ def is_valid(index, number):
     )
 
 
+def is_weakness(start, end, first_invalid_number):
+    return sum()
+
+
 first_invalid_number = next(
     number
     for i, number
@@ -33,4 +37,13 @@ first_invalid_number = next(
     if i >= PREFIX_LENGTH and not is_valid(i, number)
 )
 
+encryption_weakness = next(
+    numbers[start] + numbers[end]
+    for start, end
+    in product(numbers, numbers)
+    if start < end and sum(numbers[start:end]) == first_invalid_number
+)
+
 pp(f"Puzzle: {first_invalid_number}")
+
+pp(f"Puzzle: {encryption_weakness}")
