@@ -15,6 +15,8 @@ numbers = [
     in file_handler.readlines()
 ]
 
+indexes = list(range(0, len(numbers) + 1))
+pp(indexes)
 
 def is_valid(index, number):
     start = index - PREFIX_LENGTH
@@ -37,11 +39,18 @@ first_invalid_number = next(
     if i >= PREFIX_LENGTH and not is_valid(i, number)
 )
 
-encryption_weakness = next(
-    numbers[start] + numbers[end]
+intervals = (
+    (start, end)
     for start, end
-    in product(numbers, numbers)
-    if start < end and sum(numbers[start:end]) == first_invalid_number
+    in product(indexes, indexes)
+    if start + 3 < end
+)
+
+encryption_weakness = next(
+    numbers[start] + numbers[end - 1]
+    for start, end
+    in intervals
+    if sum(numbers[start:end]) == first_invalid_number
 )
 
 pp(f"Puzzle: {first_invalid_number}")
