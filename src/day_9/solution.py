@@ -36,17 +36,16 @@ first_invalid_number = next(
 )
 
 intervals = (
-    (start, end)
+    numbers[start: end + 1]
     for start, end
     in combinations(indexes, 2)
     if start + 3 < end
 )
 
 encryption_weakness_range = next(
-    numbers[start: end + 1]
-    for start, end
-    in intervals
-    if sum(numbers[start:end + 1]) == first_invalid_number
+    interval
+    for interval in intervals
+    if sum(interval) == first_invalid_number
 )
 
 encryption_weakness = \
