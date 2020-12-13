@@ -32,7 +32,7 @@ first_invalid_number = next(
     number
     for i, number
     in enumerate(numbers)
-    if i >= PREFIX_LENGTH and (not is_valid(i, number))
+    if i >= PREFIX_LENGTH and not is_valid(i, number)
 )
 
 intervals = (
