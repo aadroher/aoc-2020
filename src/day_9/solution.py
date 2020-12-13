@@ -15,7 +15,7 @@ numbers = [
     in file_handler.readlines()
 ]
 
-indexes = list(range(0, len(numbers)))
+indexes = range(0, len(numbers))
 
 
 def is_valid(index, number):
@@ -28,23 +28,12 @@ def is_valid(index, number):
     )
 
 
-def is_weakness(start, end, first_invalid_number):
-    return sum()
-
-
 first_invalid_number = next(
     number
     for i, number
     in enumerate(numbers)
     if i >= PREFIX_LENGTH and (not is_valid(i, number))
 )
-
-# intervals = (
-#     (start, end)
-#     for start, end
-#     in product(indexes, indexes)
-#     if start + 3 < end
-# )
 
 intervals = (
     (start, end)
@@ -53,22 +42,16 @@ intervals = (
     if start + 3 < end
 )
 
-encryption_weakness = next(
-    (
-          (start, end),
-          (numbers[start], numbers[end]),
-          min(numbers[start:(end + 1)]) + max(numbers[start:(end + 1)])
-    )
+encryption_weakness_range = next(
+    numbers[start: end + 1]
     for start, end
     in intervals
-    if sum(numbers[start:(end + 1)]) == first_invalid_number
+    if sum(numbers[start:end + 1]) == first_invalid_number
 )
 
-pp(list(intervals)[50:60])
+encryption_weakness = \
+    min(encryption_weakness_range) + max(encryption_weakness_range)
 
-pp(numbers[464:481])
-pp(sum(numbers[464:481]))
+pp(f"Puzzle 1: {first_invalid_number}")
 
-pp(f"Puzzle: {first_invalid_number}")
-
-pp(f"Puzzle: {encryption_weakness}")
+pp(f"Puzzle 2: {encryption_weakness}")
