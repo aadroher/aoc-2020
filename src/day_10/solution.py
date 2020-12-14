@@ -190,22 +190,19 @@ def get_paths(parent, descendants):
 
 
 sorted_joltages = list(sorted(joltages))
+pp(sorted_joltages)
 
-pp(
-    list(
-        islice(
-            get_edges(0, sorted_joltages),
-            10
-        )
-    )
-)
+# pp(
+#     list(
+#         islice(
+#             get_edges(0, sorted_joltages),
+#             10
+#         )
+#     )
+# )
 
-# repeated = [
-#   (n, m)
-#   for n, m
-#   in product(sorted_joltages,sorted_joltages)
-#   if n == m
-# ]
+all_unique = len(sorted_joltages) == len(set(sorted_joltages))
+pp(all_unique)
 
 all_adapters_diffs = [
     y - x for x, y
@@ -213,6 +210,44 @@ all_adapters_diffs = [
         sorted_joltages
     )
 ]
+
+pp(all_adapters_diffs)
+ones_interval_lengths = [
+    len(ones)
+    for ones
+    in "".join(
+        map(
+            str,
+            all_adapters_diffs
+        )
+    ).split('3')
+    if len(ones) > 0
+]
+pp(ones_interval_lengths)
+
+branches = [
+    sum(
+        sum(
+            1 for combination
+            in combinations(
+                range(n + 1),
+                r
+            )
+        ) for r
+        in range(min(n, 3) + 1)
+    )
+    for n in ones_interval_lengths
+]
+
+pp(branches)
+
+num_combinations = reduce(
+    lambda n, m: n * m,
+    branches
+)
+
+pp(num_combinations)
+
 
 all_adapters_diff_counts = [
     (
@@ -225,6 +260,8 @@ all_adapters_diff_counts = [
     for allowed_diff
     in allowed_jolt_diff_range
 ]
+
+pp(all_adapters_diff_counts)
 
 product_of_1_and_3_diff_counts = \
     all_adapters_diff_counts[0][1] * all_adapters_diff_counts[2][1]
