@@ -5,12 +5,12 @@ from functools import reduce
 from math import ceil
 from collections import namedtuple
 
-Connection = namedtuple('Connection', ['input', 'output', 'diff'])
+Adapter = namedtuple('Adapter', ['name', 'input', 'output', 'diff'])
 
 allowed_jolt_diff_range = range(1, 4)
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"test_1.txt", 'r')
+file_handler = open(current_dir/"input.txt", 'r')
 
 joltages = [
     int(line.strip())
@@ -36,51 +36,62 @@ def get_connections(adapter_joltages):
         [device_joltage]
     )
     return [
-        Connection(
+        Adapter(
+            name=i,
             input=x,
             output=y,
             diff=y-x
         )
-        for x, y
-        in zip(
-            with_initial_value,
-            with_end_value
+        for i, (x, y)
+        in enumerate(
+            zip(
+                with_initial_value,
+                with_end_value
+            )
         )
     ]
 
+
 def get_one_step_intervals(connections):
-  dividers = [
-    i for i, connection
-    in enumerate(connections)
-    if connection.diff == 3
-  ]
+    intervals = [[]]
+    for connection in connections:
+        if connection.diff == 1:
+            intervals[-1].append(connection)
+        else:
+            intervals.append([])
+    return intervals
 
-  pp(len(dividers))
 
-  intervals = []
-  for i, divider in enumerate(dividers):
-    next_index = i + 1
-    if next_index < len(dividers):
-      intervals += [
-        connections[divider + 1:dividers[next_index]]
-      ] 
-  return intervals
-  
-  # return [
-  #   connections[divider:dividers[i + 1]]
-  #   for i, divider 
-  #   in enumerate(dividers)
-  #   if i + 1 < len(dividers) 
-  # ]
+def is_valid_subpath(bottom, top, subpath):
+    if top - bottom <= 3:
+        return True
+    else:
+        return len(subpath) * 3 >= top - bottom
+
 
 def get_subpaths(connections):
-    pass
+    if len(connections) > 0:
+        bottom = connections[0].input
+        top = connections[-1].output
+        lengths = range(len(connections))
+        all_length_combinations = reduce(
+            lambda acc, r: acc + [
+                list(combination) for combination
+                in combinations(connections, r)
+                if is_valid_subpath(bottom, top, combination)
+            ],
+            lengths,
+            []
+        )
+        return (bottom, all_length_combinations, top)
+    else:
+        return (None, [[]], None)
 
 
 sorted_joltages = list(sorted(joltages))
 
 all_adapters_diffs = [
-    connection.diff 
+    connection.diff
     for connection
     in get_connections(
         sorted_joltages
@@ -107,43 +118,21 @@ pp(f"Puzzle 1: {product_of_1_and_3_diff_counts}")
 connections = list(get_connections(sorted_joltages))
 
 pp(connections)
-pp(all_adapters_diffs)
 
-ones_interval_lengths = [
-    len(ones)
-    for ones
-    in "".join(
-        map(
-            str,
-            all_adapters_diffs
-        )
-    ).split('3')
-    if len(ones) > 0
-]
+one_step_intervals = get_one_step_intervals(connections)
 
-pp(get_one_step_intervals(connections))
+interval_subpaths = list(
+    map(
+        get_subpaths,
+        one_step_intervals
+    )
+)
 
-pp(ones_interval_lengths)
+total_combinations = reduce(
+    lambda acc, subpaths:
+        len(subpaths[1]) * acc,
+    interval_subpaths,
+    1
+)
 
-# branches = [
-#     sum(
-#         sum(
-#             1 for combination
-#             in combinations(
-#                 range(n + 1),
-#                 r
-#             )
-#         ) for r
-#         in range(min(n, 3) + 1)
-#     )
-#     for n in ones_interval_lengths
-# ]
-
-# pp(branches)
-
-# num_combinations = reduce(
-#     lambda n, m: n * m,
-#     branches
-# )
-
-# pp(f"Puzzle 2: {num_allowed_combinations}")
+pp(total_combinations)
