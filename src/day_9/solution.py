@@ -1,8 +1,6 @@
 from pathlib import Path
 from pprint import pprint as pp
 from itertools import product, combinations
-from functools import reduce, cache
-from collections import namedtuple
 
 PREFIX_LENGTH = 25
 
