@@ -1,12 +1,6 @@
 from pathlib import Path
 from pprint import pprint as pp
-from itertools import chain, combinations, product, takewhile, islice
-from functools import reduce, cache
-from math import ceil
-from collections import namedtuple
-from multiprocessing import Pool
-
-Adapter = namedtuple('Adapter', ['name', 'joltage', 'diff'])
+from functools import reduce
 
 current_dir = Path(__file__).parent
 file_handler = open(current_dir/"input.txt", 'r')
@@ -27,8 +21,8 @@ def get_diffs(sorted_joltages):
         ((n, m), m - n)
         for n, m
         in zip(
-            chain([0], sorted_joltages),
-            chain(sorted_joltages, [device_joltage])
+            [0, *sorted_joltages],
+            [*sorted_joltages, device_joltage]
         )
     ]
 
