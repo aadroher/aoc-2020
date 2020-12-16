@@ -8,10 +8,8 @@ from multiprocessing import Pool
 
 Adapter = namedtuple('Adapter', ['name', 'joltage', 'diff'])
 
-allowed_jolt_diff_range = {*range(1, 4)}
-
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"test_1.txt", 'r')
+file_handler = open(current_dir/"input.txt", 'r')
 
 joltages = [
     int(line.strip())
@@ -19,9 +17,9 @@ joltages = [
     in file_handler.readlines()
 ]
 
+allowed_jolt_diffs = range(1, 4)
 outlet_joltage = 0
-device_joltage = max(joltages) + 3
-
+device_joltage = max(joltages) + max(allowed_jolt_diffs)
 
 
 def get_diffs(sorted_joltages):
@@ -45,7 +43,7 @@ def get_diff_counts(sorted_diffs):
             )
         )
         for allowed_diff
-        in allowed_jolt_diff_range
+        in allowed_jolt_diffs
     ]
 
 
@@ -59,29 +57,24 @@ def get_one_step_intervals(sorted_diffs):
     return intervals
 
 
-def get_path_to_end(current, end, steps):
+def count_paths(current, end, steps):
     if current == end:
         return 1
     else:
-        valid_next_steps = tuple(
+        valid_next_steps = [
             step
             for step
             in steps
-            if current - step in allowed_jolt_diff_range
-        )
+            if step - current in allowed_jolt_diffs
+        ]
         if len(valid_next_steps) == 0:
             return 0
         else:
             return sum(
-                get_path_to_end(
+                count_paths(
                     next_step,
                     end,
-                    tuple(
-                        filter(
-                            lambda step: step != next_step,
-                            steps
-                        )
-                    )
+                    {*steps} - {next_step}
                 )
                 for next_step
                 in valid_next_steps
@@ -92,10 +85,10 @@ def add_num_paths(one_step_intervals):
     return (
         (
             interval,
-            get_path_to_end(
-                max(interval),
+            count_paths(
                 min(interval) - 1,
-                list(reversed(interval)) + [min(interval) - 1]
+                max(interval),
+                {min(interval) - 1} | {*interval}
             )
         )
         for interval
