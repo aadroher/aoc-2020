@@ -8,10 +8,10 @@ from multiprocessing import Pool
 
 Adapter = namedtuple('Adapter', ['name', 'joltage', 'diff'])
 
-allowed_jolt_diff_range = range(1, 4)
+allowed_jolt_diff_range = {*range(1, 4)}
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"input.txt", 'r')
+file_handler = open(current_dir/"test_1.txt", 'r')
 
 joltages = [
     int(line.strip())
@@ -53,21 +53,20 @@ def get_path_to_end(current, steps):
     if current == 0:
         return 1
     else:
-        valid_next_steps = [
-            step for step in steps
-            if current - step in {1, 2, 3}
-        ]
-        if valid_next_steps == []:
+        valid_next_steps = {
+            step
+            for step
+            in steps
+            if current - step in allowed_jolt_diff_range
+        }
+        if len(valid_next_steps) == 0:
             return 0
         else:
             return sum(
                 get_path_to_end(
                     next_step,
-                    [*filter(
-                        lambda step: step != next_step,
-                        steps
-                    )]
-              )
+                    steps - {next_step},
+                )
                 for next_step
                 in valid_next_steps
             )
@@ -102,10 +101,14 @@ product_of_1_and_3_diff_counts = \
 
 pp(f"Puzzle 1: {product_of_1_and_3_diff_counts}")
 
-reversed_joltages = list(reversed(sorted_joltages)) + [0]
+# reversed_joltages = list(reversed(sorted_joltages)) + [0]
+joltages_set = {*joltages, 0}
+max_joltage = max(joltages_set)
+rest = joltages_set - {max_joltage}
+# pp((max_joltage, rest))
 pp(
     get_path_to_end(
-        reversed_joltages[0],
-        reversed_joltages[1:]
-  )
+        max_joltage,
+        rest
+    )
 )
