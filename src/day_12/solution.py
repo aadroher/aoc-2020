@@ -5,7 +5,7 @@ from enum import Enum
 
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"test_0.txt", 'r')
+file_handler = open(current_dir/"input.txt", 'r')
 
 instruction_strs = [
     line.strip()
@@ -87,15 +87,15 @@ def apply_instruction(state, instruction):
     operation, _ = instruction
     if operation in TRANSLATIONS.keys():
         new_state = move(state, instruction)
-        pp(new_state)
+        # pp(new_state)
         return new_state
     elif operation in {'L', 'R'}:
         new_state = turn(state, instruction)
-        pp(new_state)
+        # pp(new_state)
         return new_state
     else:
         new_state = forward(state, instruction)
-        pp(new_state)
+        # pp(new_state)
         return new_state
 
 
