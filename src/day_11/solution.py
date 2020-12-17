@@ -4,7 +4,7 @@ from itertools import product
 from functools import reduce, cache
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"test_0.txt", 'r')
+file_handler = open(current_dir/"input.txt", 'r')
 
 EMPTY_SEAT = 'L'
 OCCUPIED_SEAT = '#'
