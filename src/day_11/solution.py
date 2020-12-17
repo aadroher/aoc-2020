@@ -4,7 +4,7 @@ from itertools import product
 from functools import reduce
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"test_0.txt", 'r')
+file_handler = open(current_dir/"input.txt", 'r')
 
 EMPTY_SEAT = 'L'
 OCCUPIED_SEAT = '#'
@@ -43,10 +43,10 @@ def next_state(pos, seat_map):
     current_state = seat_map[x][y]
     if current_state == EMPTY_SEAT:
         return OCCUPIED_SEAT \
-            if get_num_adjacent_states(OCCUPIED_SEAT, pos, seat_map) == 0 else EMPTY_SEAT
+            if get_num_adjacent_states({OCCUPIED_SEAT}, pos, seat_map) == 0 else EMPTY_SEAT
     elif current_state == OCCUPIED_SEAT:
         return EMPTY_SEAT \
-            if get_num_adjacent_states(OCCUPIED_SEAT, pos, seat_map) >= 4 else OCCUPIED_SEAT
+            if get_num_adjacent_states({OCCUPIED_SEAT}, pos, seat_map) >= 4 else OCCUPIED_SEAT
     else:
         return current_state
 
@@ -60,11 +60,31 @@ def next_tick(seat_map):
     )
 
 
-pp(seat_map)
-pp(
-    next_tick(seat_map)
-)
+def get_fixed_point(seat_map):
+    next_seat_map = next_tick(seat_map)
+    if seat_map == next_seat_map:
+        return seat_map
+    else:
+        return get_fixed_point(next_seat_map)
 
-translations_vector = (-1, 0, 1)
-adjacency_translations = (*product(translations_vector, translations_vector), )
-pp(adjacency_translations)
+
+def render_string(seat_map):
+    return "\n".join(
+        (
+            "".join(row)
+            for row in seat_map
+        )
+    )
+
+
+def count_seat_state_instances(state, seat_map):
+  return sum(
+    cell in state
+    for row in seat_map
+    for cell in row
+  )
+
+fixed_point = get_fixed_point(seat_map)
+num_occupied_seats = count_seat_state_instances({OCCUPIED_SEAT}, fixed_point)
+
+pp(f"Puzzle 1: {num_occupied_seats}")
