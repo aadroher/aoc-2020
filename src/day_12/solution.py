@@ -23,6 +23,15 @@ TRANSLATIONS = dict(
 )
 
 
+
+
+def parse_instructions(instruction_strs):
+    return [
+        (instruction_str[:1], int(instruction_str[1:]))
+        for instruction_str in instruction_strs
+    ]
+
+
 def direction_to_move_operation(direction):
     return next(
         operation
@@ -76,13 +85,6 @@ def forward(state, instruction):
     return move(state, move_instruction)
 
 
-def parse_instructions(instruction_strs):
-    return [
-        (instruction_str[:1], int(instruction_str[1:]))
-        for instruction_str in instruction_strs
-    ]
-
-
 def apply_instruction(state, instruction):
     operation, _ = instruction
     if operation in TRANSLATIONS.keys():
@@ -108,12 +110,12 @@ def run(initial_state, instructions):
 
 
 def get_manhattan_distance(position):
-  x, y = position
-  return abs(x) + abs(y)
+      x, y = position
+      return abs(x) + abs(y)
 
 
-pp(instruction_strs)
-pp(parse_instructions(instruction_strs))
+# pp(instruction_strs)
+# pp(parse_instructions(instruction_strs))
 
 instructions = parse_instructions(instruction_strs)
 final_state = run(
