@@ -5,7 +5,7 @@ from enum import Enum
 
 
 current_dir = Path(__file__).parent
-file_handler = open(current_dir/"input.txt", 'r')
+file_handler = open(current_dir/"test_0.txt", 'r')
 
 instruction_strs = [
     line.strip()
@@ -21,8 +21,6 @@ TRANSLATIONS = dict(
         ((1, 0), (0, -1), (-1, 0), (0, 1))
     )
 )
-
-
 
 
 def parse_instructions(instruction_strs):
@@ -89,15 +87,12 @@ def apply_instruction(state, instruction):
     operation, _ = instruction
     if operation in TRANSLATIONS.keys():
         new_state = move(state, instruction)
-        # pp(new_state)
         return new_state
     elif operation in {'L', 'R'}:
         new_state = turn(state, instruction)
-        # pp(new_state)
         return new_state
     else:
         new_state = forward(state, instruction)
-        # pp(new_state)
         return new_state
 
 
@@ -110,16 +105,14 @@ def run(initial_state, instructions):
 
 
 def get_manhattan_distance(position):
-      x, y = position
-      return abs(x) + abs(y)
+    x, y = position
+    return abs(x) + abs(y)
 
 
-# pp(instruction_strs)
-# pp(parse_instructions(instruction_strs))
-
+initial_state = (0, (0, 0))
 instructions = parse_instructions(instruction_strs)
 final_state = run(
-    (0, (0, 0)),
+    initial_state,
     instructions
 )
 _, final_position = final_state
